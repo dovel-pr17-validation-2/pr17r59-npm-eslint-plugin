@@ -1,0 +1,32 @@
+[
+  {
+    "type": "object",
+    "properties": {
+      "additionalDirectives": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "ignore": {
+        "type": "array",
+        "items": {
+          "enum": [
+            "eslint",
+            "eslint-disable",
+            "eslint-disable-line",
+            "eslint-disable-next-line",
+            "eslint-enable",
+            "eslint-env",
+            "exported",
+            "global",
+            "globals"
+          ]
+        },
+        "additionalItems": false,
+        "uniqueItems": true
+      }
+    },
+    "additionalProperties": false
+  }
+]

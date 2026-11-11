@@ -1,0 +1,20 @@
+{
+  "type": "array",
+  "minItems": 0,
+  "maxItems": 1,
+  "items": [
+    {
+      "type": "object",
+      "properties": {
+        "threshold": {
+          "type": "integer",
+          "minimum": 2
+        },
+        "ignoreStrings": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  ]
+}

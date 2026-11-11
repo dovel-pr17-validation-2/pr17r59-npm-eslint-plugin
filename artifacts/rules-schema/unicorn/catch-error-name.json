@@ -1,0 +1,24 @@
+[
+  {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "The expected name for the error variable."
+      },
+      "ignore": {
+        "type": "array",
+        "items": {
+          "type": [
+            "string",
+            "object"
+          ],
+          "additionalProperties": true
+        },
+        "uniqueItems": true,
+        "description": "Patterns to ignore."
+      }
+    }
+  }
+]

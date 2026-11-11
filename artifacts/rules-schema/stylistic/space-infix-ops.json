@@ -1,0 +1,14 @@
+[
+  {
+    "type": "object",
+    "properties": {
+      "int32Hint": {
+        "type": "boolean"
+      },
+      "ignoreTypes": {
+        "type": "boolean"
+      }
+    },
+    "additionalProperties": false
+  }
+]

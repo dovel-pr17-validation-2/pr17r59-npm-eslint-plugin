@@ -1,0 +1,14 @@
+[
+  {
+    "type": "object",
+    "properties": {
+      "includeExports": {
+        "type": "boolean"
+      },
+      "allowSeparateTypeImports": {
+        "type": "boolean"
+      }
+    },
+    "additionalProperties": false
+  }
+]

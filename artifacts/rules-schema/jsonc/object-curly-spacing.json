@@ -1,0 +1,29 @@
+[
+  {
+    "type": "string",
+    "enum": [
+      "always",
+      "never"
+    ]
+  },
+  {
+    "type": "object",
+    "properties": {
+      "arraysInObjects": {
+        "type": "boolean"
+      },
+      "objectsInObjects": {
+        "type": "boolean"
+      },
+      "emptyObjects": {
+        "type": "string",
+        "enum": [
+          "ignore",
+          "always",
+          "never"
+        ]
+      }
+    },
+    "additionalProperties": false
+  }
+]

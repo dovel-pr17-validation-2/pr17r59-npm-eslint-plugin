@@ -1,0 +1,103 @@
+import jsoncPlugin from 'eslint-plugin-jsonc'
+
+import { ERROR } from '../../../constants.ts'
+import type { FixedLinterConfig } from '../../../types.ts'
+import { getRuleConfig, getRuleConfigOverride, REMOVE } from '../../../utilities.ts'
+
+import { stylisticJavascriptLayoutConfig } from '../stylistic/language-javascript-layout.ts'
+
+
+const INDENT_SPACE_COUNT = 2
+
+export const jsonLayoutConfig: FixedLinterConfig = {
+  plugins: {
+    jsonc: jsoncPlugin,
+  },
+
+  rules: {
+    /* ----- Extended rules ----- */
+    'jsonc/array-bracket-newline': getRuleConfig('@stylistic/array-bracket-newline', stylisticJavascriptLayoutConfig),
+    'jsonc/array-bracket-spacing': getRuleConfig('@stylistic/array-bracket-spacing', stylisticJavascriptLayoutConfig),
+    'jsonc/array-element-newline': getRuleConfig('@stylistic/array-element-newline', stylisticJavascriptLayoutConfig),
+    'jsonc/comma-dangle': [ERROR, {
+      // Configured value
+      arrays: 'never',
+      // Configured value
+      exports: 'never',
+      // Configured value
+      functions: 'never',
+      // Configured value
+      imports: 'never',
+      // Configured value
+      objects: 'never',
+    }],
+    'jsonc/comma-style': getRuleConfig('@stylistic/comma-style', stylisticJavascriptLayoutConfig),
+    // Same configuration as the @stylistic/indent rule but it diverged slightly
+    'jsonc/indent': [ERROR, INDENT_SPACE_COUNT, {
+      flatTernaryExpressions: false,
+      ignoreComments: false,
+      ignoredNodes: [],
+      offsetTernaryExpressions: true,
+      outerIIFEBody: 1,
+
+      /* ----- AST Node specifics ----- */
+      /* eslint-disable @typescript-eslint/naming-convention -- AST Nodes */
+      ArrayExpression: 1,
+      CallExpression: {
+        arguments: 1,
+      },
+      FunctionDeclaration: {
+        body: 1,
+        // Configured value
+        parameters: 'first',
+      },
+      FunctionExpression: {
+        body: 1,
+        // Configured value
+        parameters: 'first',
+      },
+      ImportDeclaration: 1,
+      MemberExpression: 1,
+      ObjectExpression: 1,
+      StaticBlock: {
+        body: 1,
+      },
+      // Configured value
+      SwitchCase: 1,
+      // Configured value
+      VariableDeclarator: {
+        const: 3,
+        let: 2,
+        var: 2,
+      },
+      /* eslint-enable @typescript-eslint/naming-convention */
+    }],
+    'jsonc/key-spacing': getRuleConfig('@stylistic/key-spacing', stylisticJavascriptLayoutConfig),
+    // Same configuration as the @stylistic/object-curly-newline rule but it diverged slightly
+    'jsonc/object-curly-newline': [ERROR, {
+      /* eslint-disable @typescript-eslint/naming-convention -- AST Nodes */
+      // Configured value
+      ExportDeclaration: { consistent: true },
+      // Configured value
+      ImportDeclaration: { consistent: true },
+      // Configured value
+      ObjectExpression: { consistent: true },
+      // Configured value
+      ObjectPattern: { consistent: true },
+      /* eslint-enable @typescript-eslint/naming-convention */
+    }],
+    'jsonc/object-curly-spacing': getRuleConfigOverride('@stylistic/object-curly-spacing', stylisticJavascriptLayoutConfig, undefined, {
+      // `jsonc` has no counterpart for this option
+      overrides: REMOVE,
+    }),
+    'jsonc/object-property-newline': getRuleConfig('@stylistic/object-property-newline', stylisticJavascriptLayoutConfig),
+    'jsonc/quote-props': [ERROR, 'always'],
+    'jsonc/quotes': [ERROR, 'double', {
+      // Configured value
+      allowTemplateLiterals: false,
+      // Configured value
+      avoidEscape: false,
+    }],
+    'jsonc/space-unary-ops': getRuleConfig('@stylistic/space-unary-ops', stylisticJavascriptLayoutConfig),
+  },
+}

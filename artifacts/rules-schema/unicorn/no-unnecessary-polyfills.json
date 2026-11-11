@@ -1,0 +1,29 @@
+[
+  {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "targets": {
+        "oneOf": [
+          {
+            "type": "string",
+            "description": "A browserslist query string."
+          },
+          {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "An array of browserslist query strings."
+          },
+          {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "A browserslist targets object."
+          }
+        ],
+        "description": "The target environments."
+      }
+    }
+  }
+]

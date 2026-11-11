@@ -1,0 +1,11 @@
+[
+  {
+    "type": "object",
+    "properties": {
+      "allowEscape": {
+        "type": "boolean"
+      }
+    },
+    "additionalProperties": false
+  }
+]

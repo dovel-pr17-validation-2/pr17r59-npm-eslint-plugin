@@ -1,0 +1,43 @@
+[
+  {
+    "type": "object",
+    "properties": {
+      "closingSlash": {
+        "type": "string",
+        "enum": [
+          "always",
+          "never",
+          "allow"
+        ]
+      },
+      "beforeSelfClosing": {
+        "type": "string",
+        "enum": [
+          "always",
+          "proportional-always",
+          "never",
+          "allow"
+        ]
+      },
+      "afterOpening": {
+        "type": "string",
+        "enum": [
+          "always",
+          "allow-multiline",
+          "never",
+          "allow"
+        ]
+      },
+      "beforeClosing": {
+        "type": "string",
+        "enum": [
+          "always",
+          "proportional-always",
+          "never",
+          "allow"
+        ]
+      }
+    },
+    "additionalProperties": false
+  }
+]

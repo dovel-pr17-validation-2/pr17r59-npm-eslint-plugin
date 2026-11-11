@@ -1,0 +1,14 @@
+[
+  {
+    "type": "object",
+    "properties": {
+      "ignoreCase": {
+        "type": "boolean"
+      },
+      "allowPattern": {
+        "type": "string"
+      }
+    },
+    "additionalProperties": false
+  }
+]

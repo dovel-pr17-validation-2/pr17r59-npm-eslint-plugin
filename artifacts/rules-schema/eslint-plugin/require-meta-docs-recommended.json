@@ -1,0 +1,12 @@
+[
+  {
+    "type": "object",
+    "properties": {
+      "allowNonBoolean": {
+        "description": "Whether to allow values of types other than boolean.",
+        "type": "boolean"
+      }
+    },
+    "additionalProperties": false
+  }
+]

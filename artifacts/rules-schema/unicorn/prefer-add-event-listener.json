@@ -1,0 +1,16 @@
+[
+  {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "excludedPackages": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "uniqueItems": true,
+        "description": "Packages to exclude from checking."
+      }
+    }
+  }
+]

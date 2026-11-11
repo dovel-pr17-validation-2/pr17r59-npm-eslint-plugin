@@ -1,0 +1,141 @@
+{
+  "$defs": {
+    "paddingType": {
+      "type": "string",
+      "enum": [
+        "any",
+        "never",
+        "always"
+      ]
+    },
+    "statementType": {
+      "type": "string",
+      "enum": [
+        "*",
+        "exports",
+        "require",
+        "directive",
+        "iife",
+        "block",
+        "empty",
+        "function",
+        "ts-method",
+        "break",
+        "case",
+        "class",
+        "continue",
+        "debugger",
+        "default",
+        "do",
+        "for",
+        "if",
+        "import",
+        "switch",
+        "throw",
+        "try",
+        "while",
+        "with",
+        "cjs-export",
+        "cjs-import",
+        "enum",
+        "interface",
+        "function-overload",
+        "block-like",
+        "singleline-block-like",
+        "multiline-block-like",
+        "expression",
+        "singleline-expression",
+        "multiline-expression",
+        "return",
+        "singleline-return",
+        "multiline-return",
+        "export",
+        "singleline-export",
+        "multiline-export",
+        "var",
+        "singleline-var",
+        "multiline-var",
+        "let",
+        "singleline-let",
+        "multiline-let",
+        "const",
+        "singleline-const",
+        "multiline-const",
+        "using",
+        "singleline-using",
+        "multiline-using",
+        "type",
+        "singleline-type",
+        "multiline-type"
+      ]
+    },
+    "selectorOption": {
+      "type": "object",
+      "properties": {
+        "selector": {
+          "type": "string"
+        },
+        "lineMode": {
+          "type": "string",
+          "enum": [
+            "any",
+            "singleline",
+            "multiline"
+          ]
+        }
+      },
+      "required": [
+        "selector"
+      ],
+      "additionalProperties": false
+    },
+    "statementMatcher": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/statementType"
+        },
+        {
+          "$ref": "#/$defs/selectorOption"
+        }
+      ]
+    },
+    "statementOption": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/statementMatcher"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/statementMatcher"
+          },
+          "minItems": 1,
+          "uniqueItems": true,
+          "additionalItems": false
+        }
+      ]
+    }
+  },
+  "type": "array",
+  "additionalItems": false,
+  "items": {
+    "type": "object",
+    "properties": {
+      "blankLine": {
+        "$ref": "#/$defs/paddingType"
+      },
+      "prev": {
+        "$ref": "#/$defs/statementOption"
+      },
+      "next": {
+        "$ref": "#/$defs/statementOption"
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "blankLine",
+      "prev",
+      "next"
+    ]
+  }
+}

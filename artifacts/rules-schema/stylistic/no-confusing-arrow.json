@@ -1,0 +1,14 @@
+[
+  {
+    "type": "object",
+    "properties": {
+      "allowParens": {
+        "type": "boolean"
+      },
+      "onlyOneSimpleParam": {
+        "type": "boolean"
+      }
+    },
+    "additionalProperties": false
+  }
+]

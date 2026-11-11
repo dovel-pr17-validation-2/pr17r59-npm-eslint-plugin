@@ -1,0 +1,14 @@
+[
+  {
+    "type": "object",
+    "properties": {
+      "skipBlankLines": {
+        "type": "boolean"
+      },
+      "ignoreComments": {
+        "type": "boolean"
+      }
+    },
+    "additionalProperties": false
+  }
+]

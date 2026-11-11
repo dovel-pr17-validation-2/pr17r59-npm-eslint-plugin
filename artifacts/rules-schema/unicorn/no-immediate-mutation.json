@@ -1,0 +1,12 @@
+[
+  {
+    "type": "object",
+    "properties": {
+      "checkConditionals": {
+        "type": "boolean",
+        "description": "Whether to check conditional mutations."
+      }
+    },
+    "additionalProperties": false
+  }
+]

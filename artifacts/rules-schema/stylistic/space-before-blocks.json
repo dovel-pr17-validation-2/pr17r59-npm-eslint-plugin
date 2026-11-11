@@ -1,0 +1,51 @@
+[
+  {
+    "oneOf": [
+      {
+        "type": "string",
+        "enum": [
+          "always",
+          "never"
+        ]
+      },
+      {
+        "type": "object",
+        "properties": {
+          "keywords": {
+            "type": "string",
+            "enum": [
+              "always",
+              "never",
+              "off"
+            ]
+          },
+          "functions": {
+            "type": "string",
+            "enum": [
+              "always",
+              "never",
+              "off"
+            ]
+          },
+          "classes": {
+            "type": "string",
+            "enum": [
+              "always",
+              "never",
+              "off"
+            ]
+          },
+          "modules": {
+            "type": "string",
+            "enum": [
+              "always",
+              "never",
+              "off"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    ]
+  }
+]

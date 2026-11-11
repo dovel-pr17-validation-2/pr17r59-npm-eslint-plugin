@@ -1,0 +1,22 @@
+[
+  {
+    "type": "object",
+    "properties": {
+      "additionalDirectives": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "uniqueItems": true
+      },
+      "allow": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "uniqueItems": true
+      }
+    },
+    "additionalProperties": false
+  }
+]

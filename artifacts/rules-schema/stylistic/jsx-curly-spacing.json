@@ -1,0 +1,139 @@
+{
+  "type": "array",
+  "items": [
+    {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "when": {
+              "type": "string",
+              "enum": [
+                "always",
+                "never"
+              ]
+            },
+            "allowMultiline": {
+              "type": "boolean"
+            },
+            "spacing": {
+              "type": "object",
+              "properties": {
+                "objectLiterals": {
+                  "type": "string",
+                  "enum": [
+                    "always",
+                    "never"
+                  ]
+                }
+              },
+              "additionalProperties": false
+            },
+            "attributes": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "when": {
+                      "type": "string",
+                      "enum": [
+                        "always",
+                        "never"
+                      ]
+                    },
+                    "allowMultiline": {
+                      "type": "boolean"
+                    },
+                    "spacing": {
+                      "type": "object",
+                      "properties": {
+                        "objectLiterals": {
+                          "type": "string",
+                          "enum": [
+                            "always",
+                            "never"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                {
+                  "type": "boolean"
+                }
+              ]
+            },
+            "children": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "when": {
+                      "type": "string",
+                      "enum": [
+                        "always",
+                        "never"
+                      ]
+                    },
+                    "allowMultiline": {
+                      "type": "boolean"
+                    },
+                    "spacing": {
+                      "type": "object",
+                      "properties": {
+                        "objectLiterals": {
+                          "type": "string",
+                          "enum": [
+                            "always",
+                            "never"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                {
+                  "type": "boolean"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "type": "string",
+          "enum": [
+            "always",
+            "never"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "object",
+      "properties": {
+        "allowMultiline": {
+          "type": "boolean"
+        },
+        "spacing": {
+          "type": "object",
+          "properties": {
+            "objectLiterals": {
+              "type": "string",
+              "enum": [
+                "always",
+                "never"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  ]
+}

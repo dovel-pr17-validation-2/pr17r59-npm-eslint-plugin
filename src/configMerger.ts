@@ -1,0 +1,316 @@
+/* eslint-disable perfectionist/sort-modules -- Temporary disabled waiting for decision to keep it or not */
+
+import { ERROR } from './constants.ts'
+
+import type { Linter } from 'eslint'
+import type { WritableDeep } from 'type-fest'
+
+import type { FixedLinterConfig } from './types.ts'
+
+
+type LanguageOptions = Linter.LanguageOptions | undefined
+// `Linter.Config['languageOptions']` is language-agnostic, only `Linter.LanguageOptions` carries the JavaScript keys
+type EcmaVersion = Linter.LanguageOptions['ecmaVersion']
+type SourceType = Linter.LanguageOptions['sourceType']
+type Globals = Linter.LanguageOptions['globals']
+type Parser = Linter.LanguageOptions['parser']
+type ParserOptions = Linter.LanguageOptions['parserOptions']
+
+type Processor = Linter.Config['processor']
+
+type Plugins = Linter.Config['plugins']
+
+type Rules = FixedLinterConfig['rules']
+// type Rule = Required<Linter.Config>['rules'][string]
+
+type Settings = Linter.Config['settings']
+
+
+export function mergeConfigs(...configs: FixedLinterConfig[]): FixedLinterConfig {
+  return configs.reduce<FixedLinterConfig>((mergedConfig, config) => {
+    return mergeTwoConfig(mergedConfig, config)
+  }, {})
+}
+
+type Cast<X, Y> = X extends Y ? X : Y
+
+type ArrayElement<A> = A extends ReadonlyArray<infer T>
+  ? T
+  : never
+
+type FromEntries<T> = T extends Array<[infer Key, unknown]>
+  ? { [K in Cast<Key, string>]: Extract<ArrayElement<T>, [K, unknown]>[1] }
+  : { [key in string]: unknown }
+
+/*
+ * Both signatures are deliberately narrower than the standard library's, which reports the values
+ * of a literal-keyed object as `unknown` and collapses entries into a single value type. Here the
+ * keys are known exhaustively, so each property keeps the type its merger returns.
+ */
+// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- See comment above
+const objectFromEntries = Object.fromEntries as <T>(entries: T) => FromEntries<WritableDeep<T>>
+
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- See comment above
+const objectEntries = Object.entries as <T extends object>(object: T) => Array<{
+  [K in keyof T]: [K, T[K]];
+}[keyof T]>
+
+const CONFIG_MERGER = {
+  /* TODO: implement this */
+  // name: mergeNames,
+  files: mergeFiles,
+  ignores: mergeIgnores,
+  language: mergeLanguage,
+  languageOptions: mergeLanguageOptions,
+
+  /* TODO: implement this */
+  // linterOptions: mergeLinterOptions,
+  plugins: mergePlugins,
+  processor: mergeProcessor,
+  rules: mergeRules,
+  settings: mergeSettings,
+} as const
+
+function mergeTwoConfig(config1: FixedLinterConfig, config2: FixedLinterConfig) {
+  return {
+    linterOptions: {
+      noInlineConfig: false,
+      reportUnusedDisableDirectives: ERROR,
+      reportUnusedInlineConfigs: ERROR,
+    },
+    ...objectFromEntries(
+      objectEntries(CONFIG_MERGER)
+        // eslint-disable-next-line max-statements -- Exhaustive dispatch, splitting it would defeat the `satisfies never` check
+        .map(([property, merger]) => {
+          switch (property) {
+            case 'files': {
+              return [property, merger(config1[property], config2[property])] as const
+            }
+            case 'ignores': {
+              return [property, merger(config1[property], config2[property])] as const
+            }
+            case 'language': {
+              return [property, merger(config1[property], config2[property])] as const
+            }
+            case 'languageOptions': {
+              return [property, merger(config1[property], config2[property])] as const
+            }
+            case 'plugins': {
+              return [property, merger(config1[property], config2[property])] as const
+            }
+            case 'processor': {
+              return [property, merger(config1[property], config2[property])] as const
+            }
+            case 'rules': {
+              return [property, merger(config1[property], config2[property])] as const
+            }
+            case 'settings': {
+              return [property, merger(config1[property], config2[property])] as const
+            }
+            default: {
+              property satisfies never
+              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions -- This should never happen
+              throw new TypeError(`no configuration merger found for property ${property}`)
+            }
+          }
+        })
+        .filter(([, merged]) => {
+          return merged !== undefined
+        })
+    ),
+  } satisfies Linter.Config
+}
+
+function mergeFiles(files1: Linter.Config['files'] = [], files2: Linter.Config['files'] = []) {
+  return [
+    ...files1,
+    ...files2,
+  ]
+}
+
+function mergeIgnores(ignores1: Linter.Config['ignores'] = [], ignores2: Linter.Config['ignores'] = []) {
+  return [
+    ...ignores1,
+    ...ignores2,
+  ]
+}
+
+function mergeLanguage(language1: Linter.Config['language'], language2: Linter.Config['language']) {
+  if (language1 === language2) {
+    return language1
+  }
+
+  if (language1 === undefined) {
+    return language2
+  }
+
+  if (language2 === undefined) {
+    return language1
+  }
+
+  throw new Error(`Two different languages were provided: ${language1} and ${language2}`)
+}
+
+const LANGUAGE_OPTIONS_MERGER = {
+  ecmaVersion: mergeEcmaVersion,
+  globals: mergeGlobals,
+  parser: mergeParser,
+  parserOptions: mergeParserOptions,
+  sourceType: mergeSourceType,
+} as const
+
+const JAVASCRIPT_LANGUAGE_OPTIONS = new Set<string>(Object.keys(LANGUAGE_OPTIONS_MERGER))
+
+/*
+ * `languageOptions` is language-agnostic: every key outside the JavaScript ones belongs to whichever
+ * language the configuration declares, and is carried over with the later configuration winning
+ */
+function pickLanguageSpecificOptions(languageOptions: LanguageOptions) {
+  return Object.fromEntries(
+    Object.entries(languageOptions ?? {}).filter(([property]) => {
+      return !JAVASCRIPT_LANGUAGE_OPTIONS.has(property)
+    })
+  )
+}
+
+function mergeLanguageOptions(languageOptions1: LanguageOptions, languageOptions2: LanguageOptions) {
+  return {
+    ...pickLanguageSpecificOptions(languageOptions1),
+    ...pickLanguageSpecificOptions(languageOptions2),
+    ...objectFromEntries(
+      objectEntries(LANGUAGE_OPTIONS_MERGER)
+        .map(([property, merger]) => {
+          switch (property) {
+            case 'ecmaVersion': {
+              return [property, merger(languageOptions1?.[property], languageOptions2?.[property])] as const
+            }
+            case 'globals': {
+              return [property, merger(languageOptions1?.[property], languageOptions2?.[property])] as const
+            }
+            case 'parser': {
+              return [property, merger(languageOptions1?.[property], languageOptions2?.[property])] as const
+            }
+            case 'parserOptions': {
+              return [property, merger(languageOptions1?.[property], languageOptions2?.[property])] as const
+            }
+            case 'sourceType': {
+              return [property, merger(languageOptions1?.[property], languageOptions2?.[property])] as const
+            }
+            default: {
+              property satisfies never
+              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions -- This should never happen
+              throw new TypeError(`no language option merger found for property ${property}`)
+            }
+          }
+        })
+        .filter(([, merged]) => {
+          return merged !== undefined
+        })
+    ),
+  } satisfies LanguageOptions
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- This is used to preserve given literals
+const mathMax = Math.max as <T extends number>(...values: [T, ...T[]]) => T
+
+function mergeEcmaVersion(version1: EcmaVersion, version2: EcmaVersion): EcmaVersion {
+  if (version1 === undefined) {
+    return version2
+  }
+
+  if (version2 === undefined) {
+    return version1
+  }
+
+  if (version1 === 'latest') {
+    return version1
+  }
+
+  return version2 === 'latest' ? version2 : mathMax(version1, version2)
+}
+
+// The later configuration wins, so composition order carries the precedence, as it does for rules
+function mergeSourceType(sourceType1: SourceType, sourceType2: SourceType) {
+  return sourceType2 ?? sourceType1
+}
+
+function mergeGlobals(globals1: Globals, globals2: Globals) {
+  return {
+    ...globals1,
+    ...globals2,
+  }
+}
+
+function mergeParser(parser1: Parser, parser2: Parser) {
+  /* eslint-disable @typescript-eslint/no-deprecated -- Deprecated are only used as fallback */
+  const parserName1 = parser1?.meta?.name ?? parser1?.name
+  const parserName2 = parser2?.meta?.name ?? parser2?.name
+  /* eslint-enable @typescript-eslint/no-deprecated */
+
+
+  if (parserName1 === parserName2) {
+    return parser1
+  }
+
+  if (!parser1) {
+    return parser2
+  }
+
+  if (!parser2) {
+    return parser1
+  }
+
+  throw new Error(`Two different parsers were provided: ${parserName1 ?? 'unknown'} and ${parserName2 ?? 'unknown'}`)
+}
+
+function mergeParserOptions(parserOptions1: ParserOptions, parserOptions2: ParserOptions) {
+  return {
+    ...parserOptions1,
+    ...parserOptions2,
+  }
+}
+
+function mergeProcessor(processor1: Processor, processor2: Processor) {
+  if (processor1 === processor2) {
+    return processor1
+  }
+
+  if (processor1 === undefined || processor2 === undefined) {
+    return processor1 ?? processor2
+  }
+
+  /* eslint-disable @typescript-eslint/no-deprecated -- Deprecated are only used as fallback */
+  const processorName1 = typeof processor1 === 'string' ? processor1 : (processor1.meta?.name ?? processor1.name)
+  const processorName2 = typeof processor2 === 'string' ? processor2 : (processor2.meta?.name ?? processor2.name)
+  /* eslint-enable @typescript-eslint/no-deprecated */
+
+  // Two unnamed processors are only the same one when they are the same object
+  if (processorName1 !== undefined && processorName1 === processorName2) {
+    return processor1
+  }
+
+  throw new Error(`Two different processors were provided: ${processorName1 ?? 'unknown'} and ${processorName2 ?? 'unknown'}`)
+}
+
+function mergePlugins(plugins1: Plugins, plugins2: Plugins) {
+  return {
+    ...plugins1,
+    ...plugins2,
+  }
+}
+
+function mergeRules(rules1: Rules, rules2: Rules) {
+  return {
+    ...rules1,
+    ...rules2,
+  }
+}
+
+function mergeSettings(settings1: Settings, settings2: Settings) {
+  return {
+    ...settings1,
+    ...settings2,
+  }
+}
+
+/* eslint-enable */

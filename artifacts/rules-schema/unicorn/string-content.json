@@ -1,0 +1,48 @@
+[
+  {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "patterns": {
+        "type": "object",
+        "description": "Patterns to replace in string content.",
+        "additionalProperties": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "object",
+              "required": [
+                "suggest"
+              ],
+              "properties": {
+                "suggest": {
+                  "type": "string"
+                },
+                "fix": {
+                  "type": "boolean"
+                },
+                "caseSensitive": {
+                  "type": "boolean"
+                },
+                "message": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "selectors": {
+        "type": "array",
+        "uniqueItems": true,
+        "items": {
+          "type": "string"
+        },
+        "description": "AST selectors for string nodes to check."
+      }
+    }
+  }
+]
